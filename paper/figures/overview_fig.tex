@@ -1,0 +1,13 @@
+% MLAF-BD system overview (external image overview_mf.png).
+% Included from main.tex; full page width (two-column) float.
+\begin{figure*}[t]\centering
+\includegraphics[width=\textwidth]{figures/overview_mf.png}
+\caption{Overview of MLAF-BD. The backdoor detection pipeline (top) passes an
+input image through the Vision Transformer, extracts the CLS-token attention map
+at every encoder layer, computes seven statistical features per layer plus the
+novel inter-layer Attention Drift, aggregates the layers with Weighted Layer
+Aggregation, and classifies with an XGBoost\,+\,MLP ensemble. The two-stage
+mitigation pipeline (bottom) removes the flagged training samples and fine-tunes
+the model with an attention-concentration penalty to produce a mitigated ViT.}
+\label{fig:overview}
+\end{figure*}

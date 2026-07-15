@@ -1,0 +1,3 @@
+dataset: gtsrb
+attack: blend
+nc_max_classes: 12

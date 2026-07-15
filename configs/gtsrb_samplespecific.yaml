@@ -1,0 +1,3 @@
+dataset: gtsrb
+attack: samplespecific
+nc_max_classes: 12

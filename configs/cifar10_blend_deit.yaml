@@ -1,0 +1,3 @@
+dataset: cifar10
+attack: blend
+backbone: deit_small_patch16_224

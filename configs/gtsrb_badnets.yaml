@@ -1,0 +1,3 @@
+dataset: gtsrb
+attack: badnets
+nc_max_classes: 12

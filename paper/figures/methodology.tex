@@ -1,0 +1,66 @@
+% MLAF-BD system overview figure (TikZ, IEEE style).
+% Included from main.tex; requires \usepackage{tikz} and
+% \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc}.
+\begin{figure*}[t]\centering
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2mm]},
+  block/.style={draw, rounded corners=1pt, align=center, minimum height=8mm,
+                inner sep=3pt, fill=white},
+  wide/.style={block, minimum width=26mm},
+  stage/.style={draw, dashed, rounded corners=2pt, inner sep=5pt},
+  lbl/.style={font=\scriptsize\itshape, align=center},
+  flow/.style={->, thick, shorten >=1pt, shorten <=1pt},
+]
+
+% ---- Stage 1: input / victim -------------------------------------------
+\node[wide] (poison) {Poisoned\\training data\\{\scriptsize $D_c \cup D_\delta$}};
+\node[wide, right=8mm of poison] (victim) {Victim ViT\\(cross-entropy)\\{\scriptsize ASR/CDA gate}};
+
+% ---- Stage 2: attention extraction -------------------------------------
+\node[wide, right=8mm of victim] (hooks) {Attention hooks\\{\scriptsize $A^{(l)}\!\in\!\mathbb{R}^{H\times(P{+}1)^2}$}\\CLS row, $\ell_1$-norm};
+\node[wide, right=8mm of hooks] (feat) {7 features/layer\\{\scriptsize ent, var, conc, spar,}\\{\scriptsize energy, KL, \textbf{drift}}};
+
+% ---- Stage 3: fusion + detector ----------------------------------------
+\node[wide, below=12mm of feat] (wla) {WLA fusion\\{\scriptsize $w_l\!\propto\!\exp(s_l/\tau)$}\\{\scriptsize $F\!\in\!\mathbb{R}^{12\times7}$}};
+\node[wide, left=8mm of wla] (ens) {Ensemble detector\\{\scriptsize $0.6\,$XGBoost}\\{\scriptsize $+\,0.4\,$MLP}};
+\node[wide, left=8mm of ens] (dec) {Per-sample\\decision\\{\scriptsize clean / poisoned}};
+
+% ---- Stage 4: mitigation -----------------------------------------------
+\node[wide, left=8mm of dec] (mit) {Two-stage\\mitigation\\{\scriptsize filter + fine-tune}};
+
+% ---- horizontal flow (top row, left to right) --------------------------
+\draw[flow] (poison) -- (victim);
+\draw[flow] (victim) -- (hooks);
+\draw[flow] (hooks)  -- (feat);
+% down into fusion
+\draw[flow] (feat)   -- (wla);
+% bottom row (right to left)
+\draw[flow] (wla)  -- (ens);
+\draw[flow] (ens)  -- (dec);
+\draw[flow] (dec)  -- (mit);
+
+% ---- drift annotation beside the vertical feat->wla arrow --------------
+\node[lbl, anchor=west, text width=34mm]
+  at ($(feat)!0.5!(wla) + (3mm,0)$)
+  {novel \emph{Attention Drift} feature\\$\mathrm{Drift}^{(l)}\!=\!\|a^{(l)}\!-\!a^{(l-1)}\|_1$};
+
+% ---- stage grouping boxes ----------------------------------------------
+\begin{scope}[on background layer]
+  \node[stage, fit=(poison)(victim), label={[lbl]above:Victim \& gate}] {};
+  \node[stage, fit=(hooks)(feat),   label={[lbl]above:Multi-layer feature extraction}] {};
+  \node[stage, fit=(ens)(wla),      label={[lbl]below:Fusion \& detection}] {};
+  \node[stage, fit=(mit)(dec),      label={[lbl]below:Output \& mitigation}] {};
+\end{scope}
+
+\end{tikzpicture}
+\caption{MLAF-BD methodology as a staged block diagram. A victim ViT is trained
+on poisoned data and gated on attack success rate; forward hooks capture the
+post-softmax CLS-token attention at every one of the twelve encoder layers; seven
+statistical features per layer---including the novel inter-layer \emph{Attention
+Drift}---form an $\mathbb{R}^{12\times7}$ matrix. Weighted Layer Aggregation fuses
+the layers by their correlation with the poison label, an XGBoost\,+\,MLP ensemble
+makes the per-sample clean/poisoned decision, and a two-stage filter-and-fine-tune
+step mitigates the surviving backdoor.}
+\label{fig:methodology}
+\end{figure*}

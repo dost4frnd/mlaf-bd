@@ -1,0 +1,14 @@
+# Self-contained full smoke test (no downloads): synthetic in-memory dataset.
+dataset: synthetic
+attack: badnets
+backbone: vit_tiny_patch16_224
+pretrained: false
+img_size: 64
+epochs: 1
+batch_size: 16
+detector_samples: 120
+nc_steps: 5
+nc_max_classes: 4
+mitigation_epochs: 1
+asr_gate: warn
+seeds: [42]

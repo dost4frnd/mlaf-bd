@@ -1,0 +1,15 @@
+# Core deep-learning stack
+torch>=2.1
+torchvision>=0.16
+timm>=0.9.16
+# Detectors / ML
+xgboost>=2.0
+scikit-learn>=1.3
+numpy>=1.24
+# Figures / IO
+matplotlib>=3.7
+seaborn>=0.12
+pyyaml>=6.0
+tqdm>=4.65
+# Note: install a CPU or CUDA torch build appropriate for your machine, e.g.
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121

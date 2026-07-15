@@ -1,0 +1,3 @@
+dataset: mnist
+attack: cleanlabel
+epochs: 5

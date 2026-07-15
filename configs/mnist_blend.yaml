@@ -1,0 +1,3 @@
+dataset: mnist
+attack: blend
+epochs: 5

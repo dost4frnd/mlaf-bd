@@ -1,0 +1,49 @@
+# Base configuration. Experiment YAMLs override only what they need.
+img_size: 224
+num_layers: 12
+num_features: 7
+pretrained: true          # fine-tune a pretrained ViT (reliable ASR). set false for --scratch.
+data_root: data
+
+poison_rate: 0.10
+target_class: 0
+trigger_size: 22          # BadNets patch side on 224 canvas (>= patch size 16)
+blend_alpha: 0.20
+ss_epsilon: 0.10
+
+epochs: 8
+lr: 1.0e-4
+weight_decay: 1.0e-4
+batch_size: 64
+num_workers: 4
+
+train_ratio: 0.56
+val_ratio: 0.14
+test_ratio: 0.30
+detector_samples: 2000
+hist_bins: 20
+
+wla_temperature: 0.5
+ensemble_xgb_weight: 0.6
+xgb_estimators: 300
+xgb_depth: 6
+xgb_lr: 0.05
+
+strip_overlays: 8
+nc_steps: 200
+nc_lambda: 0.001
+nc_max_classes: 0         # 0 = all classes; cap for speed on GTSRB
+abl_isolation_rate: 0.10
+abl_gamma: 0.20
+
+mitigation_lambda: 0.01
+mitigation_layers: [4, 5, 6, 7]
+mitigation_epochs: 2
+
+asr_gate: warn            # warn | abort
+asr_gate_threshold: 80.0
+seed: 42
+seeds: [42, 43, 44]
+output_dir: results
+figures_dir: paper/figures
+device: auto

@@ -1,0 +1,3 @@
+dataset: mnist
+attack: samplespecific
+epochs: 5

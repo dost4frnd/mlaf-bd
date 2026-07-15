@@ -1,0 +1,3 @@
+dataset: mnist
+attack: badnets
+epochs: 5
